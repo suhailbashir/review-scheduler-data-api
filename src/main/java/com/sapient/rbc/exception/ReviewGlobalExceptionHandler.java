@@ -16,7 +16,7 @@ public class ReviewGlobalExceptionHandler{
 
 	@ExceptionHandler(ReviewNotFoundException.class)
 	public ResponseEntity<?> handleReviewNotFound(ReviewNotFoundException exception, WebRequest request) {
-		ErrorDetails errorDetails = ErrorDetails.builder().timestamp(LocalDateTime.now()).code(HttpStatus.NOT_FOUND.value()).message(exception.getMessage()).build();
+		ErrorDetails errorDetails = ErrorDetails.builder().timestamp(LocalDateTime.now()).code(HttpStatus.NOT_FOUND.value()).details(request.getDescription(false)).message(exception.getMessage()).build();
 		return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
 	}
 
@@ -33,13 +33,13 @@ public class ReviewGlobalExceptionHandler{
 
 	@ExceptionHandler(DuplicateReviewException.class)
 	public ResponseEntity<?> handleDuplicateReviewException(DuplicateReviewException exception, WebRequest request) {
-		ErrorDetails errorDetails = ErrorDetails.builder().timestamp(LocalDateTime.now()).code(HttpStatus.FORBIDDEN.value()).message(exception.getMessage()).build();
+		ErrorDetails errorDetails = ErrorDetails.builder().timestamp(LocalDateTime.now()).code(HttpStatus.FORBIDDEN.value()).details(request.getDescription(false)).message(exception.getMessage()).build();
 		return new ResponseEntity<>(errorDetails, HttpStatus.FORBIDDEN);
 	}
 
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<?> globalExceptionHandling(Exception exception, WebRequest request){
-				ErrorDetails errorDetails = ErrorDetails.builder().timestamp(LocalDateTime.now()).code(HttpStatus.INTERNAL_SERVER_ERROR.value()).message(exception.getMessage()).build();
+				ErrorDetails errorDetails = ErrorDetails.builder().timestamp(LocalDateTime.now()).code(HttpStatus.INTERNAL_SERVER_ERROR.value()).details(request.getDescription(false)).message(exception.getMessage()).build();
 				return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 

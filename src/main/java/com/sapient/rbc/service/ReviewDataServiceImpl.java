@@ -1,6 +1,7 @@
 package com.sapient.rbc.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -35,14 +36,15 @@ public class ReviewDataServiceImpl implements ReviewDataService {
 	
 	
 	@Override
-	public ReviewDto saveReview(ReviewDto reviewDto) throws DuplicateReviewException {
-		Review review = null;
-		try {
-			review = reviewRepository.save(reviewMapper.mapReviewDtoToReview(reviewDto));
-		} catch (Exception e) {
+	public ReviewDto saveReview(ReviewDto reviewDto) {
+
+		Optional<Review> optionalReview = reviewRepository.findById(reviewDto.getReviewId());
+		if (optionalReview.isPresent()) {
 			throw new DuplicateReviewException(
 					environment.getProperty(ReviewExceptionMessageConstants.DUPLICATE_REVIEW_EXCEPTION));
 		}
+
+		Review review = reviewRepository.save(reviewMapper.mapReviewDtoToReview(reviewDto));
 		return reviewMapper.mapReviewToReviewDto(review);
 	}
 
