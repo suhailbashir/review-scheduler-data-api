@@ -81,6 +81,7 @@ public class ReviewDataServiceImpl implements ReviewDataService {
 				environment.getProperty(ReviewExceptionMessageConstants.REVIEW_NOT_FOUND_EXCEPTION)
 				));
 		
+		reviewRepository.deleteById(id);
 		return findAllReviews() ;
 	}
 

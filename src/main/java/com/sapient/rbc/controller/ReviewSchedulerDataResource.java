@@ -24,9 +24,9 @@ import com.sapient.rbc.exception.ReviewNotFoundException;
 import com.sapient.rbc.service.ReviewDataService;
 
 @RestController
-@RequestMapping("/review-api")
+@RequestMapping("/review-scheduler-data-api")
 @CrossOrigin(origins = "*")
-public class ReviewDataResource {
+public class ReviewSchedulerDataResource {
 
 	@Autowired
 	ReviewDataService reviewDataService;

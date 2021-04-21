@@ -7,9 +7,11 @@ import javax.validation.constraints.Pattern;
 
 import com.sapient.rbc.exception.ReviewExceptionMessageConstants;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class ReviewDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -21,7 +23,7 @@ public class ReviewDto implements Serializable {
 	private String reviewName;
 	
 	@NotEmpty(message = "Due For Review should not be empty.")
-	@Pattern(regexp = ReviewExceptionMessageConstants.DATE_FORMAT_REGEX,message = "Last Updated should be in dd/MM/yyyy format.")
+	@Pattern(regexp = ReviewExceptionMessageConstants.DATE_FORMAT_REGEX,message = "Due For Review should be in dd/MM/yyyy format.")
 	private String dueForReview;
 	
 	@NotEmpty(message = "Frequency should not be empty.")
