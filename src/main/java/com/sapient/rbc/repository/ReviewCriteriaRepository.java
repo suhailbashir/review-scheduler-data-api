@@ -1,5 +1,7 @@
 package com.sapient.rbc.repository;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -7,7 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,8 @@ import org.springframework.stereotype.Repository;
 import com.sapient.rbc.dto.ReviewDto;
 import com.sapient.rbc.dto.SearchCriteria;
 import com.sapient.rbc.entity.Review;
+import com.sapient.rbc.exception.ReviewExceptionMessageConstants;
+import com.sapient.rbc.exception.ReviewNotFoundException;
 import com.sapient.rbc.mappers.ReviewMapper;
 
 @Repository
@@ -29,25 +33,33 @@ public class ReviewCriteriaRepository {
 		this.entityManager = entityManager;
 		this.criteriaBuilder = entityManager.getCriteriaBuilder();
 	}
-
+	
+	@Autowired
+	Environment environment;
+	
 	@Autowired
 	ReviewMapper mapper;
 
-	public Page<ReviewDto> findAllReviewsWithFilters(SearchCriteria reviewSearchCriteria) {
+	public List<ReviewDto> findAllReviewsWithFilters(SearchCriteria reviewSearchCriteria)  {
 		CriteriaQuery<Review> criteriaQuery = criteriaBuilder.createQuery(Review.class);
 		Root<Review> reviewRoot = criteriaQuery.from(Review.class);
-	
+		
 		setOrder(reviewSearchCriteria, criteriaQuery, reviewRoot);
-
+		
 		TypedQuery<Review> typedQuery = entityManager.createQuery(criteriaQuery);
 		typedQuery.setFirstResult(reviewSearchCriteria.getPageNumber() * reviewSearchCriteria.getPageSize());
 		typedQuery.setMaxResults(reviewSearchCriteria.getPageSize());
-
+		
 		Pageable pageable = getPageable(reviewSearchCriteria);
-
 		long reviewsCount = getReviewsCount();
 		
-		return new PageImpl<>(mapper.mapReviewListToReviewDtoList(typedQuery.getResultList()), pageable, reviewsCount);
+		List<ReviewDto>listOfReviewDtos=new PageImpl<>(mapper.mapReviewListToReviewDtoList(typedQuery.getResultList()),
+										pageable,reviewsCount).getContent();
+		if( listOfReviewDtos.isEmpty()) {
+			throw new ReviewNotFoundException(environment.getProperty(ReviewExceptionMessageConstants.REVIEW_LIST_NOT_FOUND_EXCEPTION));
+		}
+		return listOfReviewDtos;
+
 	}
 
 	

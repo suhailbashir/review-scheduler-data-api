@@ -5,7 +5,6 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -57,7 +56,7 @@ public class ReviewSchedulerDataResource {
 	}
 	
 	@PostMapping("/reviews")
-	public ResponseEntity<Page<ReviewDto>> getAllReviewsWithPostFilters(@RequestBody SearchCriteria criteria) {
+	public ResponseEntity<List<ReviewDto>> getAllReviewsWithPostFilters(@RequestBody SearchCriteria criteria) {
 		return ResponseEntity.status(HttpStatus.OK).body(reviewDataService.findAllReviewsWithFilters(criteria));
 	}
 	

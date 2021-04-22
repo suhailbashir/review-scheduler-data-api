@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.sapient.rbc.dto.ReviewDto;
@@ -23,18 +22,16 @@ public class ReviewDataServiceImpl implements ReviewDataService {
 
 	@Autowired
 	ReviewRepository reviewRepository;
-	
+
 	@Autowired
 	ReviewCriteriaRepository reviewCriteriaRepository;
 
-	
 	@Autowired
 	ReviewMapper reviewMapper;
-	
+
 	@Autowired
 	Environment environment;
-	
-	
+
 	@Override
 	public ReviewDto saveReview(ReviewDto reviewDto) {
 
@@ -51,14 +48,14 @@ public class ReviewDataServiceImpl implements ReviewDataService {
 	@Override
 	public ReviewDto findReviewById(Long id) throws ReviewNotFoundException {
 
-		return reviewMapper.mapReviewToReviewDto( reviewRepository.findById(id).orElseThrow(()->new ReviewNotFoundException(
-				environment.getProperty(ReviewExceptionMessageConstants.REVIEW_NOT_FOUND_EXCEPTION)
-				)));
+		return reviewMapper
+				.mapReviewToReviewDto(reviewRepository.findById(id).orElseThrow(() -> new ReviewNotFoundException(
+						environment.getProperty(ReviewExceptionMessageConstants.REVIEW_NOT_FOUND_EXCEPTION))));
 	}
 
 	@Override
 	public List<ReviewDto> findAllReviews() {
-		
+
 		return reviewMapper.mapReviewListToReviewDtoList(reviewRepository.findAll());
 	}
 
@@ -75,19 +72,18 @@ public class ReviewDataServiceImpl implements ReviewDataService {
 	}
 
 	@Override
-	public List<ReviewDto> deleteReviewById(Long id) throws ReviewNotFoundException  {
-	
-		reviewRepository.findById(id).orElseThrow(()->new ReviewNotFoundException(
-				environment.getProperty(ReviewExceptionMessageConstants.REVIEW_NOT_FOUND_EXCEPTION)
-				));
-		
+	public List<ReviewDto> deleteReviewById(Long id) throws ReviewNotFoundException {
+
+		reviewRepository.findById(id).orElseThrow(() -> new ReviewNotFoundException(
+				environment.getProperty(ReviewExceptionMessageConstants.REVIEW_NOT_FOUND_EXCEPTION)));
+
 		reviewRepository.deleteById(id);
-		return findAllReviews() ;
+		return findAllReviews();
 	}
 
 	@Override
-	public Page<ReviewDto> findAllReviewsWithFilters(SearchCriteria criteria) {
+	public List<ReviewDto> findAllReviewsWithFilters(SearchCriteria criteria) {
 		return reviewCriteriaRepository.findAllReviewsWithFilters(criteria);
-}
-	
+	}
+
 }

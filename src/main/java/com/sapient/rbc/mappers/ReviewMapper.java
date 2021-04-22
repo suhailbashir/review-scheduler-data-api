@@ -12,6 +12,8 @@ import com.sapient.rbc.entity.Review;
 @Mapper(componentModel = "spring")
 public interface ReviewMapper {
 
+	
+	
 	@Mapping(target ="reviewId", source="id")
 	@Mapping(target ="dueForReview", dateFormat = "dd/MM/yyyy")
 	@Mapping(target ="lastUpdated", dateFormat = "dd/MM/yyyy")
