@@ -11,9 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,16 +27,7 @@ public class Review implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceReviewGenerator")
-	@GenericGenerator(
-			name = "sequenceMessageGenerator", 
-			strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator", 
-			parameters = {
-					@Parameter(name = "sequence_name", value = "review_sequence"),
-					@Parameter(name = "initial_value", value = "1000"), 
-					@Parameter(name = "increment_size", value = "1") 
-					}
-			)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
 	@Column(name = "REVIEW_NAME", nullable = false)

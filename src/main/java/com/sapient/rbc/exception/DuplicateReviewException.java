@@ -9,14 +9,6 @@ public class DuplicateReviewException extends RuntimeException {
 	private String message;
 	private int code;
 
-	public DuplicateReviewException() {
-
-	}
-
-	public DuplicateReviewException(String message) {
-		this.message = message;
-	}
-
 	public DuplicateReviewException(String message, int code) {
 		super();
 		this.message = message;

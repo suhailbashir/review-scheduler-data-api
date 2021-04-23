@@ -9,10 +9,10 @@ import com.sapient.rbc.exception.ReviewNotFoundException;
 
 public interface ReviewDataService {
 	
-	public ReviewDto saveReview(ReviewDto review)throws DuplicateReviewException;
-	public ReviewDto findReviewById(Long id)throws ReviewNotFoundException;
-	public List<ReviewDto> findAllReviews() throws ReviewNotFoundException;
-	public ReviewDto updateReview(ReviewDto updatedReview,Long id) throws ReviewNotFoundException;
-	public List<ReviewDto>deleteReviewById(Long id)throws ReviewNotFoundException;
+	public ReviewDto saveReview(ReviewDto review);
+	public ReviewDto findReviewById(Long id);
+	public List<ReviewDto> findAllReviews() ;
+	public ReviewDto updateReview(ReviewDto updatedReview,Long id);
+	public List<ReviewDto>deleteReviewById(Long id);
 	public List<ReviewDto>findAllReviewsWithFilters(SearchCriteria criteria);
 }

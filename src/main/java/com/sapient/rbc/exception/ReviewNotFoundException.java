@@ -9,14 +9,6 @@ public class ReviewNotFoundException extends RuntimeException {
 	private String message;
 	private int code;
 
-	public ReviewNotFoundException() {
-
-	}
-
-	public ReviewNotFoundException(String message) {
-		this.message = message;
-	}
-
 	public ReviewNotFoundException(String message, int code) {
 		super();
 		this.message = message;

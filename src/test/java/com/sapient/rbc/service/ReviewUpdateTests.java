@@ -21,6 +21,7 @@ import com.sapient.rbc.exception.ReviewNotFoundException;
 import com.sapient.rbc.mappers.ReviewMapper;
 import com.sapient.rbc.mappers.ReviewMapperImpl;
 import com.sapient.rbc.repository.ReviewRepository;
+
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
 class ReviewUpdateTests {
@@ -49,22 +50,22 @@ class ReviewUpdateTests {
 		Mockito.when(env.getProperty(Mockito.any())).thenReturn("Review not found");
 		Mockito.when(mapper.mapReviewDtoToReview(Mockito.any())).thenReturn(review);
 		Mockito.when(reviewRepository.save(Mockito.any())).thenReturn(review);
-		
+		Mockito.when(mapper.mapReviewToReviewDto(Mockito.any())).thenReturn(reviewDto);
 
-		
-
+		reviewDto.setReviewName("UpdateReview");
+		ReviewDto expectedReviewDto = reviewDataServiceImpl.updateReview(reviewDto, 1L);
+		assertThat(reviewDto.getReviewName()).isEqualTo(expectedReviewDto.getReviewName());
 
 	}
 
 	@Test
 	void updateReviewTestFailure() {
-		Review review = ObjectBuilderUtility.createReview();
 		ReviewDto reviewDto = ObjectBuilderUtility.createReviewDto();
 
-		Mockito.when(reviewRepository.findById(Mockito.any())).thenReturn(Optional.of(review));
+		Mockito.when(reviewRepository.findById(Mockito.any())).thenReturn(Optional.ofNullable(null));
 
 		assertThrows(ReviewNotFoundException.class, () -> {
-			reviewDataServiceImpl.saveReview(reviewDto);
+			reviewDataServiceImpl.updateReview(reviewDto, 1L);
 		});
 
 	}

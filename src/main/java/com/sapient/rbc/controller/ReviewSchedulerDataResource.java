@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,7 @@ import com.sapient.rbc.service.ReviewDataService;
 @RestController
 @RequestMapping("/review-scheduler-data-api")
 @CrossOrigin(origins = "*")
+@Validated
 public class ReviewSchedulerDataResource {
 
 	@Autowired
@@ -56,7 +58,7 @@ public class ReviewSchedulerDataResource {
 	}
 	
 	@PostMapping("/reviews")
-	public ResponseEntity<List<ReviewDto>> getAllReviewsWithPostFilters(@RequestBody SearchCriteria criteria) {
+	public ResponseEntity<List<ReviewDto>> getAllReviewsWithPostFilters(@RequestBody @Valid  SearchCriteria criteria) {
 		return ResponseEntity.status(HttpStatus.OK).body(reviewDataService.findAllReviewsWithFilters(criteria));
 	}
 	

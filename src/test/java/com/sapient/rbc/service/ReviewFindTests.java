@@ -1,6 +1,7 @@
 package com.sapient.rbc.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
@@ -13,15 +14,14 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.env.Environment;
-import org.springframework.data.domain.Page;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.sapient.rbc.ObjectBuilderUtility;
 import com.sapient.rbc.dto.ReviewDto;
+import com.sapient.rbc.dto.SearchCriteria;
 import com.sapient.rbc.entity.Review;
 import com.sapient.rbc.exception.ReviewNotFoundException;
 import com.sapient.rbc.mappers.ReviewMapper;
-import com.sapient.rbc.repository.ReviewCriteriaRepository;
 import com.sapient.rbc.repository.ReviewRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,9 +30,6 @@ class ReviewFindTests {
 
 	@MockBean
 	private ReviewRepository reviewRepository;
-
-	@MockBean
-	private ReviewCriteriaRepository reviewCriteriaRepository;
 
 	@MockBean
 	Environment env;
@@ -87,8 +84,19 @@ class ReviewFindTests {
 
 	@Test
 	void findAllReviewsWithFiltersSuccess() {
+		List<ReviewDto>listOfRelistOfReviewDtos=ObjectBuilderUtility.createReviewDtoList();
+		Mockito.when(reviewRepository.findAllReviewsWithFilters(Mockito.any())).thenReturn(listOfRelistOfReviewDtos);
+		
+		List<ReviewDto> listOfReviewDtosExpected = reviewDataServiceImpl.findAllReviewsWithFilters(new  SearchCriteria());
+		assertEquals(listOfRelistOfReviewDtos, listOfReviewDtosExpected);
+	}
 
-		Mockito.when(reviewCriteriaRepository.findAllReviewsWithFilters(Mockito.any())).thenReturn(null);
+
+	@Test
+	void findAllReviewsWithFiltersFailure() {
+
+		Mockito.when(reviewRepository.findAllReviewsWithFilters(Mockito.any())).thenReturn(null);
+		
 		List<ReviewDto> listOfReviewDtos = reviewDataServiceImpl.findAllReviewsWithFilters(null);
 		assertThat(listOfReviewDtos).isNull();
 	}
