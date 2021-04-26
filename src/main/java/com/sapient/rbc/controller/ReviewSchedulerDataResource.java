@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sapient.rbc.dto.ReviewDto;
 import com.sapient.rbc.dto.SearchCriteria;
+import com.sapient.rbc.exception.DuplicateReviewException;
 import com.sapient.rbc.exception.ReviewNotFoundException;
 import com.sapient.rbc.service.ReviewDataService;
 
@@ -33,7 +34,7 @@ public class ReviewSchedulerDataResource {
 	ReviewDataService reviewDataService;
 
 	@PostMapping("/review")
-	public ResponseEntity<ReviewDto> saveReview(@RequestBody @Valid ReviewDto reviewDto)  {
+	public ResponseEntity<ReviewDto> saveReview(@RequestBody @Valid ReviewDto reviewDto) throws DuplicateReviewException {
 		return ResponseEntity.status(HttpStatus.CREATED).body(reviewDataService.saveReview(reviewDto));
 	}
 
@@ -43,7 +44,7 @@ public class ReviewSchedulerDataResource {
 	}
 
 	@GetMapping("/review")
-	public ResponseEntity<List<ReviewDto>> findAllReviews() throws ReviewNotFoundException {
+	public ResponseEntity<List<ReviewDto>> findAllReviews() {
 		return ResponseEntity.status(HttpStatus.OK).body(reviewDataService.findAllReviews());
 	}
 
@@ -56,11 +57,10 @@ public class ReviewSchedulerDataResource {
 	public ResponseEntity<List<ReviewDto>> deleteReviewById(@PathVariable(name = "id") Long id) throws ReviewNotFoundException {
 		return ResponseEntity.status(HttpStatus.OK).body(reviewDataService.deleteReviewById(id));
 	}
-	
+
 	@PostMapping("/reviews")
-	public ResponseEntity<List<ReviewDto>> getAllReviewsWithPostFilters(@RequestBody @Valid  SearchCriteria criteria) {
+	public ResponseEntity<List<ReviewDto>> getAllReviewsWithPostFilters(@RequestBody @Valid SearchCriteria criteria)throws ReviewNotFoundException {
 		return ResponseEntity.status(HttpStatus.OK).body(reviewDataService.findAllReviewsWithFilters(criteria));
 	}
-	
 
 }

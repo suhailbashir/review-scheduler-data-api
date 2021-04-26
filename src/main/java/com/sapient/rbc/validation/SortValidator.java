@@ -1,17 +1,25 @@
 package com.sapient.rbc.validation;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-import com.sapient.rbc.dto.SortBy;
 
 public class SortValidator implements ConstraintValidator<SortConstraint, String> {
 
+	final private List<String> sortByPattern = Arrays.asList("reviewName","frequency");
+    
 	@Override
-	public boolean isValid(String value, ConstraintValidatorContext context) {
-		return value != null && value.equals(SortBy.FREQUENCY.toString()) || value.equals(SortBy.REVIEW_NAME.toString());
-		
-	}
+    public void initialize(final SortConstraint constraintAnnotation) {
+
+    }
+	
+    @Override
+    public boolean isValid(final String value, final ConstraintValidatorContext context) {
+        return !(value == null || value.isEmpty()) && sortByPattern.contains(value);
+    }
 
 	
 }

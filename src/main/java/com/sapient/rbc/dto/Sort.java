@@ -2,10 +2,12 @@ package com.sapient.rbc.dto;
 
 import java.io.Serializable;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.Valid;
 
+import com.sapient.rbc.validation.DirectionConstraint;
 import com.sapient.rbc.validation.SortConstraint;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
@@ -13,11 +15,14 @@ public class Sort implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
-	@NotEmpty(message = "Direction should not be empty.")
-	private Direction direction;
+	@DirectionConstraint
+	@Valid
+	@Schema(description ="direction", type = "string", example = "ASC")
+	private String direction;
 	
-	@NotEmpty(message = "SortBy should not be empty.")
 	@SortConstraint
-	private SortBy sortBy;
+	@Valid
+	@Schema(description ="sort by", type = "string", example = "reviewName")
+	private String sortBy;
 	
 }

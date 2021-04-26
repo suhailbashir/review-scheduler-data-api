@@ -30,12 +30,12 @@ public class ReviewDataServiceImpl implements ReviewDataService {
 	Environment environment;
 
 	@Override
-	public ReviewDto saveReview(ReviewDto reviewDto) {
+	public ReviewDto saveReview(ReviewDto reviewDto) throws DuplicateReviewException {
 
 		Optional<Review> optionalReview = reviewRepository.findById(reviewDto.getReviewId());
 		if (optionalReview.isPresent()) {
-			throw new DuplicateReviewException(
-					environment.getProperty(ReviewExceptionMessageConstants.DUPLICATE_REVIEW_EXCEPTION),HttpStatus.BAD_REQUEST.value());
+			throw new DuplicateReviewException(HttpStatus.BAD_REQUEST.value(),
+					environment.getProperty(ReviewExceptionMessageConstants.DUPLICATE_REVIEW_EXCEPTION));
 		}
 
 		Review review = reviewRepository.save(reviewMapper.mapReviewDtoToReview(reviewDto));
@@ -43,11 +43,11 @@ public class ReviewDataServiceImpl implements ReviewDataService {
 	}
 
 	@Override
-	public ReviewDto findReviewById(Long id) {
+	public ReviewDto findReviewById(Long id) throws ReviewNotFoundException {
 
 		return reviewMapper
-				.mapReviewToReviewDto(reviewRepository.findById(id).orElseThrow(() -> new ReviewNotFoundException(
-						environment.getProperty(ReviewExceptionMessageConstants.REVIEW_NOT_FOUND_EXCEPTION),HttpStatus.NOT_FOUND.value())));
+				.mapReviewToReviewDto(reviewRepository.findById(id).orElseThrow(() -> new ReviewNotFoundException(HttpStatus.NOT_FOUND.value(),
+						environment.getProperty(ReviewExceptionMessageConstants.REVIEW_NOT_FOUND_EXCEPTION))));
 	}
 
 	@Override
@@ -57,10 +57,10 @@ public class ReviewDataServiceImpl implements ReviewDataService {
 	}
 
 	@Override
-	public ReviewDto updateReview(ReviewDto updatedReviewDto, Long id)  {
+	public ReviewDto updateReview(ReviewDto updatedReviewDto, Long id) throws ReviewNotFoundException  {
 
-		Review review = reviewRepository.findById(id).orElseThrow(() -> new ReviewNotFoundException(
-				environment.getProperty(ReviewExceptionMessageConstants.REVIEW_NOT_FOUND_EXCEPTION),HttpStatus.NOT_FOUND.value()));
+		Review review = reviewRepository.findById(id).orElseThrow(() -> new ReviewNotFoundException(HttpStatus.NOT_FOUND.value(),
+				environment.getProperty(ReviewExceptionMessageConstants.REVIEW_NOT_FOUND_EXCEPTION)));
 
 		if (review != null) {
 			review = reviewRepository.save(reviewMapper.mapReviewDtoToReview(updatedReviewDto));
@@ -69,17 +69,17 @@ public class ReviewDataServiceImpl implements ReviewDataService {
 	}
 	
 	@Override
-	public List<ReviewDto> deleteReviewById(Long id)  {
+	public List<ReviewDto> deleteReviewById(Long id) throws ReviewNotFoundException  {
 
-		reviewRepository.findById(id).orElseThrow(() -> new ReviewNotFoundException(
-				environment.getProperty(ReviewExceptionMessageConstants.REVIEW_NOT_FOUND_EXCEPTION),HttpStatus.NOT_FOUND.value()));
+		reviewRepository.findById(id).orElseThrow(() -> new ReviewNotFoundException(HttpStatus.NOT_FOUND.value(),
+				environment.getProperty(ReviewExceptionMessageConstants.REVIEW_NOT_FOUND_EXCEPTION)));
 
 		reviewRepository.deleteById(id);
 		return findAllReviews();
 	}
 	
 	@Override
-	public List<ReviewDto> findAllReviewsWithFilters(SearchCriteria criteria) {
+	public List<ReviewDto> findAllReviewsWithFilters(SearchCriteria criteria) throws ReviewNotFoundException {
 		return  reviewRepository.findAllReviewsWithFilters(criteria);
 	}
 

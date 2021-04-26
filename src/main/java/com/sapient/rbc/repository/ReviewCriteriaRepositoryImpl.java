@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 
+import com.sapient.rbc.dto.Direction;
 import com.sapient.rbc.dto.ReviewDto;
 import com.sapient.rbc.dto.SearchCriteria;
 import com.sapient.rbc.entity.Review;
@@ -41,7 +42,7 @@ public class ReviewCriteriaRepositoryImpl implements ReviewCriteriaRepository{
 	@Autowired
 	ReviewMapper mapper;
 
-	public List<ReviewDto> findAllReviewsWithFilters(SearchCriteria reviewSearchCriteria)  {
+	public List<ReviewDto> findAllReviewsWithFilters(SearchCriteria reviewSearchCriteria) throws ReviewNotFoundException  {
 		CriteriaQuery<Review> criteriaQuery = criteriaBuilder.createQuery(Review.class);
 		Root<Review> reviewRoot = criteriaQuery.from(Review.class);
 		
@@ -54,28 +55,27 @@ public class ReviewCriteriaRepositoryImpl implements ReviewCriteriaRepository{
 		Pageable pageable = getPageable(reviewSearchCriteria);
 		long reviewsCount = getReviewsCount();
 		
-		List<ReviewDto>listOfReviewDtos=new PageImpl<>(mapper.mapReviewListToReviewDtoList(typedQuery.getResultList()),
-										pageable,reviewsCount).getContent();
+		List<ReviewDto>listOfReviewDtos=new PageImpl<>(mapper.mapReviewListToReviewDtoList(typedQuery.getResultList()),pageable,reviewsCount).getContent();
+		
 		if( listOfReviewDtos.isEmpty()) {
-			throw new ReviewNotFoundException(environment.getProperty(ReviewExceptionMessageConstants.REVIEW_LIST_NOT_FOUND_EXCEPTION),HttpStatus.NOT_FOUND.value());
+			throw new ReviewNotFoundException(HttpStatus.NOT_FOUND.value(),environment.getProperty(ReviewExceptionMessageConstants.REVIEW_LIST_NOT_FOUND_EXCEPTION));
 		}
 		return listOfReviewDtos;
 
 	}
 
-	
-
 	private void setOrder(SearchCriteria searchCriteria, CriteriaQuery<Review> criteriaQuery, Root<Review> reviewRoot) {
 
-		if (searchCriteria.getSort().getDirection().getDirectionCode().equals(Sort.Direction.ASC.toString())) {
-			criteriaQuery.orderBy(criteriaBuilder.asc(reviewRoot.get(searchCriteria.getSort().getSortBy().getSortBy())));
+		if (searchCriteria.getSort().getDirection().equals(Direction.ASCENDING.getDirectionCode())) {
+			criteriaQuery.orderBy(criteriaBuilder.asc(reviewRoot.get(searchCriteria.getSort().getSortBy())));
 		} else {
-			criteriaQuery.orderBy(criteriaBuilder.desc(reviewRoot.get(searchCriteria.getSort().getSortBy().getSortBy())));
+			criteriaQuery.orderBy(criteriaBuilder.desc(reviewRoot.get(searchCriteria.getSort().getSortBy())));
 		}
 	}
-
+	
 	private Pageable getPageable(SearchCriteria reviewSearchCriteria) {
-		Sort sort = Sort.by(reviewSearchCriteria.getSort().getDirection().getDirectionCode(), reviewSearchCriteria.getSort().getSortBy().getSortBy());
+	
+		Sort sort= Sort.by(reviewSearchCriteria.getSort().getDirection(), reviewSearchCriteria.getSort().getSortBy());
 		return PageRequest.of(reviewSearchCriteria.getPageNumber(), reviewSearchCriteria.getPageSize(), sort);
 	}
 

@@ -1,6 +1,9 @@
 package com.sapient.rbc.dto;
 
-public enum SortBy {
+import java.io.Serializable;
+
+public enum SortBy implements Serializable  {
+	
 	REVIEW_NAME("reviewName"), FREQUENCY("frequency");
 
 	private final String sortByCode;
