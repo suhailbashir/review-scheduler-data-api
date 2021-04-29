@@ -15,9 +15,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.context.request.WebRequest;
 
+import com.sapient.rbc.constants.AppStatus;
 import com.sapient.rbc.constants.ErrorCodes;
 import com.sapient.rbc.constants.ErrorMessage;
-import com.sapient.rbc.dto.ReviewBaseResponse;
+import com.sapient.rbc.dto.BaseResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,14 +27,14 @@ import lombok.extern.slf4j.Slf4j;
 public class ReviewGlobalExceptionHandler{
 
 	@ExceptionHandler(ReviewNotFoundException.class)
-	public ResponseEntity<?> handleReviewNotFound(ReviewNotFoundException e, WebRequest request) {
+	public ResponseEntity<BaseResponse> handleReviewNotFound(ReviewNotFoundException e, WebRequest request) {
 		log.error("ReviewNotFoundException : " , e.getMessage());
 		return new ResponseEntity<>(handleError(ErrorCodes.DATA_NOT_FOUND_ERROR.getErrorCode(),ErrorMessage.REVIEW_NOT_FOUND.getMessage()),HttpStatus.NOT_FOUND);
 	}
-
+	
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<?> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, WebRequest request) {
+	public ResponseEntity<BaseResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException exception, WebRequest request) {
 		log.error("MethodArgumentNotValidException : " , exception.getMessage());
 		List<ErrorDetails>errorList=new ArrayList<>();
 		exception.getAllErrors().stream()
@@ -41,48 +42,48 @@ public class ReviewGlobalExceptionHandler{
 			ErrorDetails errorDetails = ErrorDetails.builder().code(ErrorCodes.REQUEST_ERROR.getErrorCode()).message(ex.getDefaultMessage()).build();
 			errorList.add(errorDetails);
 		});
-		return new ResponseEntity<>(errorList, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(BaseResponse.builder().errorDetails(errorList).status(AppStatus.FAILURE.name()).build(), HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(DuplicateReviewException.class)
-	public ResponseEntity<?> handleDuplicateReviewException(DuplicateReviewException e, WebRequest request) {
+	public ResponseEntity<BaseResponse> handleDuplicateReviewException(DuplicateReviewException e, WebRequest request) {
 		log.error("DuplicateReviewException : " , e.getMessage());
 		return new ResponseEntity<>(handleError(ErrorCodes.REQUEST_ERROR.getErrorCode(),ErrorMessage.BAD_REQUEST.getMessage()),HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(IOException.class)
-	public ResponseEntity<?> handleIOException(IOException e, WebRequest request) {
+	public ResponseEntity<BaseResponse> handleIOException(IOException e, WebRequest request) {
 		log.error("IOException : " , e.getMessage());
 		return new ResponseEntity<>(handleError(ErrorCodes.REQUEST_ERROR.getErrorCode(),ErrorMessage.IO_ERROR.getMessage()),HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(ResourceAccessException.class)
-	public ResponseEntity<?> handleRAException(ResourceAccessException e, WebRequest request) {
+	public ResponseEntity<BaseResponse> handleRAException(ResourceAccessException e, WebRequest request) {
 		log.error("ResourceAccessException : " , e.getMessage());
 		return new ResponseEntity<>(handleError(ErrorCodes.REQUEST_ERROR.getErrorCode(),ErrorMessage.IO_ERROR.getMessage()),HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(HttpClientErrorException.class)
-    public ResponseEntity<ReviewBaseResponse<String>> globalHttpException(HttpClientErrorException e){
+    public ResponseEntity<BaseResponse> globalHttpException(HttpClientErrorException e){
 		log.error("HttpClientErrorException : " , e.getMessage());
 		return new ResponseEntity<>(handleError(String.valueOf(e.getRawStatusCode()),e.getLocalizedMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	@ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ReviewBaseResponse<String>> invalidFormatException(HttpMessageNotReadableException e){
+    public ResponseEntity<BaseResponse> invalidFormatException(HttpMessageNotReadableException e){
 		log.error("HttpMessageNotReadableException : " , e.getMessage());
 		return new ResponseEntity<>(handleError(ErrorCodes.REQUEST_ERROR.getErrorCode(),e.getLocalizedMessage()),HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(Exception.class)
-    public ResponseEntity<ReviewBaseResponse<String>> globalException(Exception e){
+    public ResponseEntity<BaseResponse> globalException(Exception e){
 		log.error("Exception : " , e.getMessage());
 		return new ResponseEntity<>(handleError(ErrorCodes.INTERNAL_ERROR.getErrorCode(),ErrorCodes.INTERNAL_ERROR.getErrorMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 		
-	
-	public ReviewBaseResponse<String> handleError(String code,String message){
-		ReviewBaseResponse<String> baseResponse = new ReviewBaseResponse<>();
+
+	public BaseResponse handleError(String code, String message) {
+	BaseResponse baseResponse=	BaseResponse.builder().build();
 		baseResponse.setErrorDetails(Arrays.asList(ErrorDetails.builder().code(code).message(message).build()));
 		baseResponse.setStatus("Error");
 		return baseResponse;

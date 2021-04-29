@@ -41,7 +41,7 @@ class ReviewUpdateTests {
 	private ReviewDataServiceImpl reviewDataServiceImpl;
 
 	@Test
-	void updateReviewTestSuccess() {
+	void updateReviewTestSuccess() throws ReviewNotFoundException {
 
 		Review review = ObjectBuilderUtility.createReview();
 		ReviewDto reviewDto = ObjectBuilderUtility.createReviewDto();

@@ -17,7 +17,6 @@ public class ReviewDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	
 	private Long reviewId;
 	
 	@NotEmpty(message = "Review Name should not be empty.")

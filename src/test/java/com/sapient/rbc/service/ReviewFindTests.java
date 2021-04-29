@@ -41,7 +41,7 @@ class ReviewFindTests {
 	private ReviewDataServiceImpl reviewDataServiceImpl;
 
 	@Test
-	void findReviewByIdTestSuccess() {
+	void findReviewByIdTestSuccess() throws ReviewNotFoundException {
 		Review review = ObjectBuilderUtility.createReview();
 		ReviewDto reviewDto = ObjectBuilderUtility.createReviewDto();
 
@@ -83,22 +83,23 @@ class ReviewFindTests {
 	}
 
 	@Test
-	void findAllReviewsWithFiltersSuccess() {
+	void findAllReviewsWithFiltersSuccess() throws ReviewNotFoundException {
 		List<ReviewDto>listOfRelistOfReviewDtos=ObjectBuilderUtility.createReviewDtoList();
 		Mockito.when(reviewRepository.findAllReviewsWithFilters(Mockito.any())).thenReturn(listOfRelistOfReviewDtos);
-		
-		List<ReviewDto> listOfReviewDtosExpected = reviewDataServiceImpl.findAllReviewsWithFilters(new  SearchCriteria());
+	
+		List<ReviewDto> listOfReviewDtosExpected = reviewDataServiceImpl.findAllReviewsWithFilters(SearchCriteria.builder().build());
 		assertEquals(listOfRelistOfReviewDtos, listOfReviewDtosExpected);
 	}
 
 
 	@Test
-	void findAllReviewsWithFiltersFailure() {
+	void findAllReviewsWithFiltersFailure() throws ReviewNotFoundException {
 
 		Mockito.when(reviewRepository.findAllReviewsWithFilters(Mockito.any())).thenReturn(null);
 		
 		List<ReviewDto> listOfReviewDtos = reviewDataServiceImpl.findAllReviewsWithFilters(null);
 		assertThat(listOfReviewDtos).isNull();
 	}
+
 
 }

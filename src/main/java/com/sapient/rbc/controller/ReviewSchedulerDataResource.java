@@ -1,13 +1,10 @@
 package com.sapient.rbc.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sapient.rbc.constants.AppStatus;
+import com.sapient.rbc.dto.BaseResponse;
 import com.sapient.rbc.dto.ReviewDto;
 import com.sapient.rbc.dto.SearchCriteria;
 import com.sapient.rbc.exception.DuplicateReviewException;
@@ -27,9 +26,8 @@ import com.sapient.rbc.service.ReviewDataService;
 @RestController
 @RequestMapping("/review-scheduler-data-api")
 @CrossOrigin(origins = "*")
-@Validated
 public class ReviewSchedulerDataResource {
-
+	
 	@Autowired
 	ReviewDataService reviewDataService;
 
@@ -44,8 +42,14 @@ public class ReviewSchedulerDataResource {
 	}
 
 	@GetMapping("/review")
-	public ResponseEntity<List<ReviewDto>> findAllReviews() {
-		return ResponseEntity.status(HttpStatus.OK).body(reviewDataService.findAllReviews());
+	public ResponseEntity<BaseResponse> findAllReviews() {
+		
+		BaseResponse response=BaseResponse.builder()
+				.status(AppStatus.SUCCESS.name())
+				.data(reviewDataService.findAllReviews())
+				.build();
+		
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@PutMapping("/review/{id}")
@@ -54,13 +58,24 @@ public class ReviewSchedulerDataResource {
 	}
 
 	@DeleteMapping("/review/{id}")
-	public ResponseEntity<List<ReviewDto>> deleteReviewById(@PathVariable(name = "id") Long id) throws ReviewNotFoundException {
-		return ResponseEntity.status(HttpStatus.OK).body(reviewDataService.deleteReviewById(id));
+	public ResponseEntity<BaseResponse> deleteReviewById(@PathVariable(name = "id") Long id) throws ReviewNotFoundException {
+		
+		BaseResponse response=BaseResponse.builder()
+				.status(AppStatus.SUCCESS.name())
+				.data(reviewDataService.deleteReviewById(id))
+				.build();
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@PostMapping("/reviews")
-	public ResponseEntity<List<ReviewDto>> getAllReviewsWithPostFilters(@RequestBody @Valid SearchCriteria criteria)throws ReviewNotFoundException {
-		return ResponseEntity.status(HttpStatus.OK).body(reviewDataService.findAllReviewsWithFilters(criteria));
+	public ResponseEntity<BaseResponse> getAllReviewsWithPostFilters(@RequestBody @Valid SearchCriteria criteria)throws ReviewNotFoundException {
+		
+		BaseResponse response=BaseResponse.builder()
+											.status(AppStatus.SUCCESS.name())
+											.data(reviewDataService.findAllReviewsWithFilters(criteria))
+											.build();
+				
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 }

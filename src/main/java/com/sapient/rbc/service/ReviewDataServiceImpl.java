@@ -44,7 +44,7 @@ public class ReviewDataServiceImpl implements ReviewDataService {
 
 	@Override
 	public ReviewDto findReviewById(Long id) throws ReviewNotFoundException {
-
+		
 		return reviewMapper
 				.mapReviewToReviewDto(reviewRepository.findById(id).orElseThrow(() -> new ReviewNotFoundException(HttpStatus.NOT_FOUND.value(),
 						environment.getProperty(ReviewExceptionMessageConstants.REVIEW_NOT_FOUND_EXCEPTION))));
@@ -55,7 +55,7 @@ public class ReviewDataServiceImpl implements ReviewDataService {
 
 		return reviewMapper.mapReviewListToReviewDtoList(reviewRepository.findAll());
 	}
-
+	
 	@Override
 	public ReviewDto updateReview(ReviewDto updatedReviewDto, Long id) throws ReviewNotFoundException  {
 
@@ -73,11 +73,11 @@ public class ReviewDataServiceImpl implements ReviewDataService {
 
 		reviewRepository.findById(id).orElseThrow(() -> new ReviewNotFoundException(HttpStatus.NOT_FOUND.value(),
 				environment.getProperty(ReviewExceptionMessageConstants.REVIEW_NOT_FOUND_EXCEPTION)));
-
+		
 		reviewRepository.deleteById(id);
 		return findAllReviews();
 	}
-	
+
 	@Override
 	public List<ReviewDto> findAllReviewsWithFilters(SearchCriteria criteria) throws ReviewNotFoundException {
 		return  reviewRepository.findAllReviewsWithFilters(criteria);

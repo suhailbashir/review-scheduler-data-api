@@ -3,6 +3,7 @@ package com.sapient.rbc.repository;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -17,7 +18,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 
-import com.sapient.rbc.dto.Direction;
 import com.sapient.rbc.dto.ReviewDto;
 import com.sapient.rbc.dto.SearchCriteria;
 import com.sapient.rbc.entity.Review;
@@ -28,13 +28,8 @@ import com.sapient.rbc.mappers.ReviewMapper;
 @Repository
 public class ReviewCriteriaRepositoryImpl implements ReviewCriteriaRepository{
 
-	private final EntityManager entityManager;
-	private final CriteriaBuilder criteriaBuilder;
-
-	public ReviewCriteriaRepositoryImpl(EntityManager entityManager) {
-		this.entityManager = entityManager;
-		this.criteriaBuilder = entityManager.getCriteriaBuilder();
-	}
+	@PersistenceContext
+	private  EntityManager entityManager;
 	
 	@Autowired
 	Environment environment;
@@ -43,20 +38,21 @@ public class ReviewCriteriaRepositoryImpl implements ReviewCriteriaRepository{
 	ReviewMapper mapper;
 
 	public List<ReviewDto> findAllReviewsWithFilters(SearchCriteria reviewSearchCriteria) throws ReviewNotFoundException  {
+		CriteriaBuilder criteriaBuilder=entityManager.getCriteriaBuilder();
 		CriteriaQuery<Review> criteriaQuery = criteriaBuilder.createQuery(Review.class);
 		Root<Review> reviewRoot = criteriaQuery.from(Review.class);
 		
-		setOrder(reviewSearchCriteria, criteriaQuery, reviewRoot);
-		
+		setOrder(reviewSearchCriteria,criteriaBuilder, criteriaQuery, reviewRoot);
+	
 		TypedQuery<Review> typedQuery = entityManager.createQuery(criteriaQuery);
 		typedQuery.setFirstResult(reviewSearchCriteria.getPageNumber() * reviewSearchCriteria.getPageSize());
 		typedQuery.setMaxResults(reviewSearchCriteria.getPageSize());
 		
 		Pageable pageable = getPageable(reviewSearchCriteria);
-		long reviewsCount = getReviewsCount();
+		long reviewsCount = getReviewsCount(criteriaBuilder);
 		
 		List<ReviewDto>listOfReviewDtos=new PageImpl<>(mapper.mapReviewListToReviewDtoList(typedQuery.getResultList()),pageable,reviewsCount).getContent();
-		
+
 		if( listOfReviewDtos.isEmpty()) {
 			throw new ReviewNotFoundException(HttpStatus.NOT_FOUND.value(),environment.getProperty(ReviewExceptionMessageConstants.REVIEW_LIST_NOT_FOUND_EXCEPTION));
 		}
@@ -64,9 +60,9 @@ public class ReviewCriteriaRepositoryImpl implements ReviewCriteriaRepository{
 
 	}
 
-	private void setOrder(SearchCriteria searchCriteria, CriteriaQuery<Review> criteriaQuery, Root<Review> reviewRoot) {
+	private void setOrder(SearchCriteria searchCriteria,CriteriaBuilder criteriaBuilder , CriteriaQuery<Review> criteriaQuery, Root<Review> reviewRoot) {
 
-		if (searchCriteria.getSort().getDirection().equals(Direction.ASCENDING.getDirectionCode())) {
+		if (searchCriteria.getSort().getDirection().equals(org.springframework.data.domain.Sort.Direction.DESC.toString())) {
 			criteriaQuery.orderBy(criteriaBuilder.asc(reviewRoot.get(searchCriteria.getSort().getSortBy())));
 		} else {
 			criteriaQuery.orderBy(criteriaBuilder.desc(reviewRoot.get(searchCriteria.getSort().getSortBy())));
@@ -79,7 +75,7 @@ public class ReviewCriteriaRepositoryImpl implements ReviewCriteriaRepository{
 		return PageRequest.of(reviewSearchCriteria.getPageNumber(), reviewSearchCriteria.getPageSize(), sort);
 	}
 
-	private long getReviewsCount() {
+	private long getReviewsCount(CriteriaBuilder criteriaBuilder) {
 		CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
 		Root<Review> countRoot = countQuery.from(Review.class);
 		countQuery.select(criteriaBuilder.count(countRoot));

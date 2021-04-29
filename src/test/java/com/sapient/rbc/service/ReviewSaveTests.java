@@ -42,7 +42,7 @@ public class ReviewSaveTests {
 	private ReviewDataServiceImpl reviewDataServiceImpl;
 
 	@Test
-	void savereviewTestSuccess() {
+	void savereviewTestSuccess() throws DuplicateReviewException {
 
 		Review review = ObjectBuilderUtility.createReview();
 		ReviewDto reviewDto = ObjectBuilderUtility.createReviewDto();

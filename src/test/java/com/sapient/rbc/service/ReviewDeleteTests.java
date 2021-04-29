@@ -45,7 +45,7 @@ public class ReviewDeleteTests {
 	private ReviewDataServiceImpl reviewDataServiceImpl;
 
 	@Test
-	void deleteReviewTestSuccess() {
+	void deleteReviewTestSuccess() throws ReviewNotFoundException {
 		Review review = ObjectBuilderUtility.createReview();
 
 		when(reviewRepository.findById(Mockito.any())).thenReturn(Optional.of(review));
