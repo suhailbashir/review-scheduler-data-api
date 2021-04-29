@@ -27,7 +27,7 @@ class PojoTests {
 	 @Test
 	  void Test_ReviewBaseResponse() {
 		 final Class<?> classUnderTest = BaseResponse.class;
-	//	 assertPojoMethodsFor(classUnderTest).areWellImplemented();
+		 assertPojoMethodsFor(classUnderTest).areWellImplemented();
 	 }
 	 
 	 

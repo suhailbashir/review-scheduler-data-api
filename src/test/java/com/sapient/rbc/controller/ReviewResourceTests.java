@@ -1,10 +1,8 @@
 package com.sapient.rbc.controller;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -18,12 +16,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sapient.rbc.ObjectBuilderUtility;
 import com.sapient.rbc.dto.ReviewDto;
 import com.sapient.rbc.dto.SearchCriteria;
 import com.sapient.rbc.dto.Sort;
+import com.sapient.rbc.exception.DuplicateReviewException;
+import com.sapient.rbc.exception.ReviewNotFoundException;
 import com.sapient.rbc.mappers.ReviewMapper;
 import com.sapient.rbc.service.ReviewDataService;
 
@@ -66,7 +67,7 @@ import com.sapient.rbc.service.ReviewDataService;
 	void saveReviewTestFail() throws Exception {
 		ReviewDto reviewDto = ObjectBuilderUtility.createReviewDto();
 		
-		when(reviewDataService.saveReview(reviewDto)).thenReturn(null);
+		when(reviewDataService.saveReview(reviewDto)).thenThrow(DuplicateReviewException.class);
 		
 		String url="/review-scheduler-data-api/review";
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post(url)
@@ -82,18 +83,17 @@ import com.sapient.rbc.service.ReviewDataService;
 	void saveReviewTestFail2() throws Exception {
 		ReviewDto reviewDto = ObjectBuilderUtility.createReviewDto();
 		
-		when(reviewDataService.findReviewById(Mockito.anyLong())).thenReturn(reviewDto);
+		when(reviewDataService.saveReview(Mockito.any())).thenThrow(new DuplicateReviewException(400,"Not Found"));
 		
 		String url="/review-scheduler-data-api/review";
 		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post(url)
 																	  .contentType(MediaType.APPLICATION_JSON_VALUE)
 																	  .accept(MediaType.APPLICATION_JSON)
 																	  .characterEncoding("UTF-8")
-																	  .content(this.mapper.writeValueAsBytes(null));
-	
+																	  .content(this.mapper.writeValueAsBytes(reviewDto));
+
 		mockMvc.perform(builder).andExpect(status().isBadRequest());		
 	}
-	
 	
 	
 	@Test
@@ -149,6 +149,23 @@ import com.sapient.rbc.service.ReviewDataService;
 		mockMvc.perform(builder).andExpect(status().isOk());		
 	}
 	
+	
+	@Test
+	void findReviewByIdTestFail() throws Exception {
+		ReviewDto reviewDto = ObjectBuilderUtility.createReviewDto();
+		
+		when(reviewDataService.findReviewById(Mockito.any())).thenThrow(new ReviewNotFoundException(404,"Not Found"));
+		
+		String url="/review-scheduler-data-api/review/{id}";
+		
+		MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(url,1L)
+																		  .contentType(MediaType.APPLICATION_JSON_VALUE)
+																		  .accept(MediaType.APPLICATION_JSON)
+																		  .characterEncoding("UTF-8");
+	
+		
+		mockMvc.perform(builder).andExpect(status().is4xxClientError());			
+	}
 	
 	
 	@Test

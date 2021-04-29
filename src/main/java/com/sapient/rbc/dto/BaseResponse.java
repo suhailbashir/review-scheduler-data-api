@@ -13,9 +13,9 @@ import lombok.Data;
 @Data
 @Builder
 public class BaseResponse {
-	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-uuuu HH:mm:ss:SSS").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault());
+	private static  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-uuuu HH:mm:ss:SSS").withLocale(Locale.getDefault()).withZone(ZoneId.systemDefault());
 	private String status;
 	private List<ErrorDetails> errorDetails; 
-	private final String timestamp = formatter.format(Instant.now());
+	private  String timestamp = formatter.format(Instant.now());
 	private List<ReviewDto> data;
 }
