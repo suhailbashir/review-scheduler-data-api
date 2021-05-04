@@ -6,8 +6,9 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 
-
+@PropertySource("classpath:messages.properties")
 public class SortValidator implements ConstraintValidator<SortConstraint, String> {
 	
 	@Value("${applicableSortByFields}")

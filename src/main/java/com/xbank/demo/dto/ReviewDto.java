@@ -5,7 +5,7 @@ import java.io.Serializable;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
-import com.xbank.demo.exception.ReviewExceptionMessageConstants;
+import com.xbank.demo.constants.ReviewExceptionMessageConstants;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -19,23 +19,22 @@ public class ReviewDto implements Serializable {
 	
 	private Long reviewId;
 	
-	@NotEmpty(message = "Review Name should not be empty.")
+	@NotEmpty(message ="{reviewname.not.empty.message}")
 	private String reviewName;
 	
-	@NotEmpty(message = "Due For Review should not be empty.")
-	@Pattern(regexp = ReviewExceptionMessageConstants.DATE_FORMAT_REGEX,message = "Due For Review should be in dd/MM/yyyy format.")
+	@NotEmpty(message ="{dueforreview.not.empty.message}")
+	@Pattern(regexp = ReviewExceptionMessageConstants.DATE_FORMAT_REGEX,message = "{dueforreview.pattern.message}")
 	@Schema(description ="dueForReview", type = "date", example = "01/01/2021")
 	private String dueForReview;
 	
-	@NotEmpty(message = "Frequency should not be empty.")
+	@NotEmpty(message = "{frequency.not.empty.message}")
 	private String frequency;
 	
-	@NotEmpty(message = "Review should not be empty.")
+	@NotEmpty(message = "{reviewtype.not.empty.message}")
 	private String reviewType;
 	
-	@NotEmpty(message = "Last Updated should not be empty.")
-	@Pattern(regexp = ReviewExceptionMessageConstants.DATE_FORMAT_REGEX,message = "Last Updated should be in dd/MM/yyyy format.")
+	@NotEmpty(message = "{lastupdated.not.empty.message}")
+	@Pattern(regexp = ReviewExceptionMessageConstants.DATE_FORMAT_REGEX,message = "{lastupdated.pattern.message}")
 	@Schema(description ="lastUpdated", type = "date", example = "01/01/2021")
 	private String lastUpdated;
-
 }

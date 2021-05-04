@@ -36,7 +36,7 @@ public class Review implements Serializable {
 	@Column(name = "DUE_FOR_REVIEW", nullable = false)
 	private LocalDate dueForReview;
 
-	@Column(name = "FREQUENCYE", nullable = false)
+	@Column(name = "FREQUENCY", nullable = false)
 	private String frequency;
 
 	@Column(name = "REVIEW_TYPE", nullable = false)

@@ -1,8 +1,10 @@
 package com.xbank.demo.exception;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@Getter
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class DuplicateReviewException extends ApiException {
 
 	private static final long serialVersionUID = 1L;

@@ -9,7 +9,8 @@ import lombok.Getter;
 public enum ErrorMessage {
 
 	REVIEW_NOT_FOUND("Review Not Found"),
-	IO_ERROR("IO ERROR"),
-	BAD_REQUEST("BAD Request");
+	DUPLICATE_REVIEW("Duplicate Review"),
+	BAD_REQUEST("Bad Request");
+	
 	String message;
 }

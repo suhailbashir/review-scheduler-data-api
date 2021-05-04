@@ -18,10 +18,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 
+import com.xbank.demo.constants.ReviewExceptionMessageConstants;
 import com.xbank.demo.dto.ReviewDto;
 import com.xbank.demo.dto.SearchCriteria;
 import com.xbank.demo.entity.Review;
-import com.xbank.demo.exception.ReviewExceptionMessageConstants;
 import com.xbank.demo.exception.ReviewNotFoundException;
 import com.xbank.demo.mappers.ReviewMapper;
 

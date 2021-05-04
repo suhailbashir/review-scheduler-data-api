@@ -14,7 +14,7 @@ import javax.validation.Payload;
 @Target( { ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SortConstraint {
-    String message() default "Invalid Sort Column.Please pass either <frequency> or <reviewName> column name.";
+    String message() default "Invalid Sort Column.Please pass either <frequency> or <reviewName> or <reviewType> or <lastUpdated> or <dueForDate>  column name.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

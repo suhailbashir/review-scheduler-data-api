@@ -1,4 +1,4 @@
-package com.xbank.demo.exception;
+package com.xbank.demo.constants;
 
 import lombok.Data;
 

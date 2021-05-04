@@ -19,13 +19,13 @@ public class SearchCriteria implements Serializable {
 	
 	@Min(0)
 	@Max(1000)
-	@NotNull(message = "PageNumber should not be empty.")
+	@NotNull(message = "{pageSize.not.empty.message}")
 	@Schema(description ="page number", type = "integer", example = "0")
 	private Integer pageNumber;
 	
 	@Min(0)
 	@Max(1000)
-	@NotNull(message = "PageSize should not be empty.")
+	@NotNull(message = "{pageSize.not.empty.message}")
 	@Schema(description ="page size", type = "integer", example = "10")
 	private Integer pageSize;
 	

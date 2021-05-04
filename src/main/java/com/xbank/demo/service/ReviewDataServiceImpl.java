@@ -4,20 +4,23 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.xbank.demo.constants.ReviewExceptionMessageConstants;
 import com.xbank.demo.dto.ReviewDto;
 import com.xbank.demo.dto.SearchCriteria;
 import com.xbank.demo.entity.Review;
 import com.xbank.demo.exception.DuplicateReviewException;
-import com.xbank.demo.exception.ReviewExceptionMessageConstants;
 import com.xbank.demo.exception.ReviewNotFoundException;
 import com.xbank.demo.mappers.ReviewMapper;
 import com.xbank.demo.repository.ReviewRepository;
 
 @Service
+@PropertySource("classpath:messages.properties")
 public class ReviewDataServiceImpl implements ReviewDataService {
 
 	@Autowired

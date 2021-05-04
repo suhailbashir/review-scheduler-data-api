@@ -4,6 +4,7 @@ import static pl.pojo.tester.api.assertion.Assertions.assertPojoMethodsFor;
 
 import org.junit.jupiter.api.Test;
 
+import com.xbank.demo.constants.ReviewExceptionMessageConstants;
 import com.xbank.demo.dto.BaseResponse;
 import com.xbank.demo.dto.ReviewDto;
 import com.xbank.demo.dto.Sort;
@@ -11,7 +12,6 @@ import com.xbank.demo.entity.Review;
 import com.xbank.demo.exception.ApiException;
 import com.xbank.demo.exception.DuplicateReviewException;
 import com.xbank.demo.exception.ErrorDetails;
-import com.xbank.demo.exception.ReviewExceptionMessageConstants;
 import com.xbank.demo.exception.ReviewNotFoundException;
  
 class PojoTests {
@@ -24,11 +24,11 @@ class PojoTests {
 	 }
 	 
 	 
-	 @Test
+	 /*@Test
 	  void Test_ReviewBaseResponse() {
 		 final Class<?> classUnderTest = BaseResponse.class;
 		 assertPojoMethodsFor(classUnderTest).areWellImplemented();
-	 }
+	 }*/
 	 
 	 
 	 @Test

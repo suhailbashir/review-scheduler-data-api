@@ -1,19 +1,15 @@
 package com.xbank.demo.exception;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
-@Getter
-@ToString
-@EqualsAndHashCode
-@Setter
-public class ApiException extends Exception{
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class ApiException extends RuntimeException{
 
 	private static final long serialVersionUID = 1L;
-	private  int code;
-	private  String message;
+	private final int code;
+	private final String message;
 	
 	public ApiException(int code, String message) {
 		this.code=code;

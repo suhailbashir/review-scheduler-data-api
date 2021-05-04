@@ -16,11 +16,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xbank.demo.ObjectBuilderUtility;
-import com.xbank.demo.controller.ReviewSchedulerDataResource;
 import com.xbank.demo.dto.ReviewDto;
 import com.xbank.demo.dto.SearchCriteria;
 import com.xbank.demo.dto.Sort;
@@ -29,7 +27,7 @@ import com.xbank.demo.exception.ReviewNotFoundException;
 import com.xbank.demo.mappers.ReviewMapper;
 import com.xbank.demo.service.ReviewDataService;
 
-@WebMvcTest(value = ReviewSchedulerDataResource.class)
+@WebMvcTest(value = ReviewDataController.class)
 @ActiveProfiles("default")
 @OverrideAutoConfiguration(enabled = true)
  class ReviewResourceTests {
